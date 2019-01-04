@@ -1,0 +1,12 @@
+build
+target
+out
+gradle
+*.iml
+*.ipr
+*.iws
+.idea
+.gradle
+*.mid
+*.txt
+*.wav
