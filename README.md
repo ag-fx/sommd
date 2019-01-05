@@ -11,8 +11,12 @@ with a duration that alternates between 1/4th and 3/4ths"
 , write 
 "dr 1/4 3/4 nt 50 55 54 50"
 
-The following is supported: Branching, chords, scales, scale shifts, instrument change, velocities, variable definitions, 
-MIDI export, FL Studio score export, chiptune-esque audio export and Java General-MIDI playback.
+The following is supported: 
+* Language: Branching, chords, scales, scale shifts, instrument change, velocities, and variable definitions
+
+* Export/Playback: MIDI, FL Studio score, chiptune-esque audio, and Java General-MIDI playback.
+
+* UI: Syntax highlighting, error messages, dark and light theme, inbuilt documentation/examples
 
 The program is split into the following modules:
 * Core: Handles all parsing of text into music formats like MIDI
@@ -20,3 +24,5 @@ The program is split into the following modules:
 
 The core has no java dependencies at all, it is written in pure Kotlin! Thus it can be used in web or native applications as
 Kotlin can be compiled against those targets.
+
+![](https://github.com/user00e00/sommd/blob/master/Screenshot_SoMMD.png?raw=true)
