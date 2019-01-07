@@ -215,13 +215,17 @@ class MainStyle : Stylesheet(){
         button{
             +globalSettings
             //borderStyle += BorderStrokeStyle.SOLID
-            backgroundColor = multi(flChannelRackGrey , fldarkButtonBkg, fldarkButtonBkgDarker)
-            backgroundInsets = multi(box(4.px), box(6.px), box(8.px))
+            backgroundColor = multi(fldarkButtonBkg,flChannelRackGrey.brighter(), fldarkButtonBkgDarker)
+            //backgroundColor = multi(fldarkButtonBkgDarker , fldarkButtonBkg, flChannelRackGrey)
+            //backgroundInsets = multi(box(4.px), box(6.px), box(8.px))
+            backgroundInsets = multi(box(0.px), box(2.px), box(4.px))
+
         }
 
         s(button, tabLabel,comboBox){
             and(hover){
                 underline = true
+                backgroundColor = multi(fldarkButtonBkg,flChannelRackGrey.brighter(), Color.DODGERBLUE)
             }
         }
 

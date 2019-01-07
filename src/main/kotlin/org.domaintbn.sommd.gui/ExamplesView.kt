@@ -1,6 +1,9 @@
 package org.domaintbn.sommd.gui
 
+import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleStringProperty
+import javafx.geometry.Orientation
+import javafx.geometry.Pos
 import javafx.scene.control.MenuItem
 import javafx.scene.layout.Priority
 import javafx.scene.text.TextAlignment
@@ -15,11 +18,18 @@ class ExamplesView : View("Examples") {
 
 
 
+    private val STARTUPTEXT = "// Select an example above.\n// The examples may be copy pasted into the editor."
+
+    private val exampleIsChosen = SimpleBooleanProperty(false)
+
+    private val chosenExampleText = SimpleStringProperty("No example\nselected yet")
+
     private val highlighter : SyntaxSpanBuilder by inject()
 
     private val exampleTextProperty = SimpleStringProperty()
 
     private val exampleTextArea = StyleClassedTextArea().apply {
+
 
         stylesheets.clear()
 
@@ -35,7 +45,7 @@ class ExamplesView : View("Examples") {
 //        }
         this.setParagraphGraphicFactory(LineNumberFactory.get(this))
 
-        exampleTextProperty.value = "// Select an example above.\n// The examples may be copy pasted into the editor."
+        exampleTextProperty.value = STARTUPTEXT
         isEditable = false
     }
 
@@ -46,11 +56,17 @@ class ExamplesView : View("Examples") {
         top = hbox {
 
 
+            style{
+                alignment = Pos.CENTER
+            }
+
             spacer()
+
             label("Select example:") {
                 textAlignment = TextAlignment.CENTER
                 useMaxHeight = true
             }
+
 
             menubar{
                 menu("Basic"){
@@ -69,6 +85,7 @@ class ExamplesView : View("Examples") {
                     }
                 }
             }
+
 
 
 
@@ -91,6 +108,20 @@ class ExamplesView : View("Examples") {
         }
         center = VirtualizedScrollPane<StyleClassedTextArea>(exampleTextArea).apply{
 
+
+        }
+        bottom = hbox {
+            spacer()
+            button(chosenExampleText) {
+
+                enableWhen(exampleIsChosen)
+                action {
+                    find(EditorView::class).overwriteWithExample(exampleTextProperty.value)
+                    //find(EditorView::class).root.requestFocus()
+                    //exampleTextProperty.
+                }
+            }
+            spacer()
         }
 
     }
@@ -108,9 +139,12 @@ class ExamplesView : View("Examples") {
     }
 
     private fun createMenuItemExampleSelect(es : ExampleSongs): MenuItem {
+
         val out = MenuItem().apply{
             this.text = es.description
             action{
+                chosenExampleText.value = "Load to editor:\n${es.description}"
+                exampleIsChosen.value = true
                 exampleTextProperty.value = es.text
             }
         }

@@ -483,6 +483,66 @@ bre
 
     ),
 
+    ADVANCED_NOTE_COMMAND(
+      "Advanced: 4, Note command (more)",
+            """
+                // Note command {nt}, advanced concepts:
+
+//NEGATIVE INDEX
+//recall that nt 53 means (standard octave (5-5=0), and scale index 3
+
+//adding an exclamation mark in front of the pitch data makes the index, "negative"
+
+// different notation but plays the same two notes in a row each time
+nt !50 50 0 0    !51 4b 0 0   !52 4a 0 0   !53 49 0 0
+
+// mostly meant to be used with scales, so that one can go "backwards" without having
+// to worry about the octave
+sc 50-52-53-55-57-58-5a
+
+nt 50 51 50 !51 50 51 52 53 50 !51 !52 !53
+
+
+sc 50-51-52-53-54-55-56-57-58-59-5a-5b //resetting to chromatic scale
+
+nt 0 0 0 0 //pause
+
+//REPEATS AND EXTENDS
+// repeat or extend notes with {^} or {*}
+nt 40^4 // equivalent to {nt 40 40 40 40}
+
+nt 0 0 0 0 //pause
+
+dr 1/2 nt 40*4 // equivalent to {dr 2/1 nt 40}
+dr 1/4 1/4 1/2 nt 40*3 //equivalent to dr 1/1 nt 40
+
+// extended pitches ignore stacked durations and are sustained
+dr 1/8-1/8 nt 50*2 //equivalent to dr 1/2 nt 50
+
+dr 1/4 //reset duration
+nt 0 0 0 0 //pause
+
+
+//BRACKET GROUPS
+// with {[} and {]}
+// - be able to repeat a sequence and not just a single pitch
+
+//equivalent commands below
+nt [50 52 53 0]^2
+nt 50 52 53 0 50 52 53 0
+
+
+// another way to stack pitches (chords) when a group starts with {-[}
+nt -[50 54 57] //equivalent to nt 50-54-57
+
+// parallel sequence with {,} inside bracket group
+// similar to branches, where {[} behaves like {brs}, {,} behaves like {brr}
+// and {]} behaves like {bre}
+dr 1/2 nt [50*4,0 57*3, 0^2 60*2]
+            """.trimIndent()
+
+    ),
+
     DEMO1("Demo: Demo 1",
             """
 sc 50-52-53-55-57-5b	// harmonic minor scale
@@ -634,6 +694,107 @@ dr 1/16   nt 62 63 62 60   dr 1/3   nt 50 4a 50
 bre
 
 """),
+    DEMO4(
+            "Demo: Demo 4",
+    """brs.mel1=
+in 1 dr 1/6 5/6 ve 80 60
+dr 1/12-s1/12 1/6 nt 50 50 50 50 40*2
+nt 53 55 53 51 50*2
+nt 4a 4a 4a 4a 47*2
+nt 4a 50 51 50 dr 1/12 nt 3a^4
+bre
+
+brs.mel1_2=
+dr 1/6 3/6 2/6 in 1 1 3 ve 80 60 70
+dr 1/6 s1/12-1/12 nt 50 50 50 50 60*2
+nt 53 55 53 51 60*2
+nt 4a 4a 4a 4a 57*2
+nt 4a 50 51 50 dr 1/12 in 3 nt 3a 3a 4a 5a
+
+bre
+
+
+brs.backing1=
+dr 1/3 2/3 ve 10 60  dr -[1/3 2/3 1/3 2/3 ]in 2 nt 50-57 4a-55
+
+bre
+
+brs.arp1=
+dr 1/24-s3/24 nt [50 58 57 51 57 58]^2
+dr 1/24-s3/24 nt [4a 55 51 4a 55 51]^2
+bre
+
+brs brs.mel1 brs.mel1_2 brr brs.backing1^2 brr brs.arp1^2 bre
+"""
+    ),
+
+
+    DEMO5("Demo: Demo 5",
+            """   //minor scale
+sc 50-52-53-55-57-58-5a
+
+   /*starting a branch and
+   saving it to a variable*/
+brs.part1=
+       //instrument channel 0
+   in 0
+
+      // dr sets duration, nt creates a note
+      // first digit = octave, second digit = scale index
+   dr 1/4 nt 50 51 52 51 dr 1/1 nt 50
+   dr 1/8-1/8 nt 50 51 53 54 dr 1/1 nt 50
+
+brr      //branch reset (start on next branch)
+   in 2
+
+      //dashes lets you stack notes into a chord
+   dr 4/1 nt 40-42-44
+brr
+   in 1
+      // setting up a velocity cycle. each 1/16 time
+      // division will have a different velocity
+   dr 1/16 ve 40 60 70 30
+
+      // dashes lets you make a note repeat
+      // here, one note is played four times
+   dr 1/16-1/16-1/16-1/16
+
+      // all commands can be saved to a variable
+      // when a command is saved, it is not inserted
+      // into the song, just defined
+   nt.pat= 60 61 62 63  64 65 66 65
+
+      // and here the variable is loaded
+      // and inserted into the song
+   nt.pat
+   nt.pat
+bre      // end of branch here. will now continue
+      // with the state of the FIRST branch as it
+      // finished
+
+brs.section=   //defining a new branch, referencing the other one
+
+      // scale shift. shifts all notes up or down the scale
+   ss 0
+   brs.part1
+   ss 1
+   brs.part1
+   ss -2
+   brs.part1
+   ss 0
+   brs.part1
+bre
+
+      // now we play the section
+brs.section
+      // change scale to major
+sc 50-52-54-55-57-59-5b
+      // play section again in major
+brs.section"""
+
+
+
+    ),
 
     TUTORIAL_1_NOTE(
         "Tutorial 1 : Note Command", """/*

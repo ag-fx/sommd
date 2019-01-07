@@ -104,4 +104,12 @@ class MusicTime(bar: Int, frac: Fraction) : Comparable<MusicTime> {
     }
 
 
+    fun divide(other : MusicTime): MusicTime {
+        val thisFrac = Fraction(this.bar*this.frac.denominator+this.frac.numerator,this.frac.denominator)
+        val otherFrac = Fraction(other.bar*other.frac.denominator+other.frac.numerator,other.frac.denominator)
+        val resultFrac = thisFrac.divide(otherFrac)
+        return MusicTime(resultFrac.numerator,resultFrac.denominator)
+    }
+
+
 }

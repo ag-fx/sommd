@@ -58,6 +58,12 @@ class StepNoteBlock {
         }
     }
 
+    fun getTotalSteps() : Int{
+        val lastNote = this.stepNotes.maxBy{it.start+it.steplen}
+        if(lastNote==null) return 0
+        return lastNote.start+lastNote.steplen
+    }
+
     private fun getNextFreeStep(): Int {
         val tmp = stepNotes.maxBy { it.start + it.steplen }
         val out = when (tmp) {

@@ -55,7 +55,7 @@ class EditorView : View("Editor") {
 
     val timelineDelayedExportEnable = Timeline().apply{
         keyFrames.clear()
-        keyFrames.add(KeyFrame(javafx.util.Duration.millis(400.0), EventHandler<ActionEvent>() {
+        keyFrames.add(KeyFrame(javafx.util.Duration.millis(200.0), EventHandler<ActionEvent>() {
             exportingOK.value = true
         }))
     }
@@ -286,12 +286,15 @@ class EditorView : View("Editor") {
         messageArea.setMessage("...waiting")
         compilerStateLabelView.showCompilerStateWaiting()
 
+
         this.errorToShow.value = false
         timelineDelayedExportEnable.stop()
         this.exportingOK.value = false
 
 
         this.errorToken = null
+        this.markError()
+
 
         compilerTask?.cancel()
 
@@ -458,8 +461,8 @@ class EditorView : View("Editor") {
             highlightingTask = this
             find(SyntaxSpanBuilder::class).computeHighlight(text, { callBack() })
         } ui {
-            if(!text.equals(codeAreaEditor.text)){
-                println("Changed under my nose!") // TODO bug
+            if(text.length != codeAreaEditor.text.length){
+               // println("Changed under my nose!") // TODO bug
             }else{
             codeAreaEditor.setStyleSpans(0, it)
         }}
@@ -477,10 +480,26 @@ class EditorView : View("Editor") {
             val styleClass = "syntaxerror"
             ssb.add(Collections.singleton(styleClass), len)
             this.codeAreaEditor.setStyleSpans(errorSpot.range.start, ssb.create())
+        }else{
+            //this.codeAreaEditor.setStyleSpans(lastErrorToken.range.start,lastErrorToken.range.endInclusive,)
         }
 
     }
 
+    fun overwriteWithExample(value: String) {
+        val result = alert(
+                Alert.AlertType.CONFIRMATION,
+                "Set Example",
+                "Replace contents in editor with the example?",
+                owner = this@EditorView.currentWindow
+        )
+        val doOverwrite = result.result == ButtonType.OK
+        if(doOverwrite) {
+            this.codeAreaEditor.replaceText(value)
+            find(MainView::class).changeToEditor()
+        }
+
+    }
 
 
 }

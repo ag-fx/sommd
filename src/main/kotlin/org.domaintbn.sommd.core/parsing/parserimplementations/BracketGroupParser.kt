@@ -14,6 +14,9 @@ class BracketGroupParser(val isStacking: Boolean, val validRegexList: List<Regex
 
     val recursiveStringList = RecursiveList<String>()
 
+    private fun isRootCommand(str : String) : Boolean{
+        return RootCommandValidator.isValidRootCommand(str)
+    }
 
     override fun start(lex: Lexer) {
         var keepGoing = true
@@ -67,6 +70,9 @@ class BracketGroupParser(val isStacking: Boolean, val validRegexList: List<Regex
                 }
 
                 else -> {
+                    if(!completed && isRootCommand(token.string)){
+                        throw ParserException(lex.getLastFetchedToken(), ErrorMessage.GROUP_NOT_CLOSED(), this)
+                    }
                     throw BracketParserException(lex.getLastFetchedToken(),this)
                     //keepGoing = false
                 }

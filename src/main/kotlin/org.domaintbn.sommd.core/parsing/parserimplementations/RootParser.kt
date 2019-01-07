@@ -128,14 +128,14 @@ private constructor(variableHandler: VariableHandler, private var isInsideBranch
                 }
                 CommandOperation.LOADVAR -> {
                     lex.consumeNextToken(consumer = this)
-                    val x = stripRepeatFromVariable(ss.string)
 
-                    val compound = x.first.split(".")
+                    val compound = ss.string.split(".")
 
                     if(!compound[1].matches(r.regexVariable)){
                         throw ParserException(ss,ErrorMessage.UNSUPPORTED_VARIABLE_NAME(compound[1]),this)
                     }
 
+                    val x = stripRepeatFromVariable(ss.string)
                     val retrievedVar = varHandler.varMap[x.first]
 
                     if (retrievedVar == null) {
@@ -145,6 +145,7 @@ private constructor(variableHandler: VariableHandler, private var isInsideBranch
                                 this
                         )
                     }
+
                     repeat(x.second) {
                     this.rootCommSeq.addAll(retrievedVar)
                     }

@@ -16,13 +16,13 @@ class MainView : View("SoMMD"){
         this.tabClosingPolicy = TabPane.TabClosingPolicy.UNAVAILABLE
         this.side = Side.RIGHT
         tab("Editor"){
-            this.content = EditorView().root
+            this.content = find(EditorView::class).root
             //this.content = label("hei")
         }
 
         tab("Examples"){
 
-            this.content = ExamplesView().root
+            this.content = find(ExamplesView::class).root
         }
     }
 
@@ -34,6 +34,10 @@ class MainView : View("SoMMD"){
             find(JavaSynthPlayback::class).stopSequencer()
             Platform.exit()
         }
+    }
+
+    fun changeToEditor(){
+        this.root.selectionModel.select(0)
     }
 
 

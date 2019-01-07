@@ -211,7 +211,9 @@ class NoteParser : IParser{
                         out.add(parseAllPitch(group.value), stepPointer)
                     else -> {
                         stepPointer += 1
-                        out.add(parseAllPitch(group.value), stepPointer)
+                        val tmpBlock = parseAllPitch(group.value)
+                        out.add(tmpBlock, stepPointer)
+                        stepPointer +=tmpBlock.getTotalSteps()-1
                     }
                 }
 

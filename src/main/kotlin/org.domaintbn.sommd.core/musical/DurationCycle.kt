@@ -184,7 +184,8 @@ class DurationCycle {
 
         val totCycleTime = this.getTime(totBins)
 
-        val tmp = mt.toDouble() / totCycleTime.toDouble()
+        //val tmp = mt.toDouble() / totCycleTime.toDouble()
+        val tmp = mt.divide(totCycleTime).toDouble()
         val cyclesPrior = kotlin.math.floor(tmp).toInt()
 
         val mtFit: MusicTime // the equivalent of mt that is ensured to be between 0 and total cycle time

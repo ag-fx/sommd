@@ -67,4 +67,11 @@ class Fraction(num : Int, den: Int){
     override fun toString() : String{
         return "$numerator/$denominator"
     }
+
+    fun divide(other : Fraction) : Fraction{
+        if(other.numerator ==0){
+            return Fraction(0,1) // TODO bugprone?
+        }
+        return Fraction(this.numerator*other.denominator,this.denominator*other.numerator)
+    }
 }

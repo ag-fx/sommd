@@ -158,4 +158,12 @@ class EquivalenceTesting{
         )
     }
 
+    @Test
+    fun groups2(){
+        assertEquals(
+                getSongOutput("nt 50^2 60"),
+                getSongOutput("nt [50^2 60]")
+        )
+    }
+
 }
