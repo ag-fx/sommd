@@ -171,7 +171,7 @@ class DurationParser : IParser {
 
     private fun processBadGroupToken(bpe: BracketParserException) {
         if(bpe.problemToken.string.matches(r.stackedFractionRx)){
-            throw ParserException(bpe.problemToken,ErrorMessage.NOTE_GROUP_INVALID_TOKEN_STACKED(),bpe.source)
+            throw ParserException(bpe.problemToken,ErrorMessage.DURATION_GROUP_INVALID_TOKEN_STACKED(),bpe.source)
         }
     }
 

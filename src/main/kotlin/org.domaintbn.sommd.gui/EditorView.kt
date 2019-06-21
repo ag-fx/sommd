@@ -5,6 +5,7 @@ import javafx.animation.Timeline
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.event.ActionEvent
 import javafx.event.EventHandler
+import javafx.event.EventType
 import javafx.geometry.Orientation
 import javafx.scene.control.*
 import javafx.scene.input.*
@@ -61,6 +62,7 @@ class EditorView : View("Editor") {
     }
 
     override val root = borderpane {
+
         top = hbox {
             vbox {
                 menubar {
@@ -231,6 +233,13 @@ class EditorView : View("Editor") {
                         }
                     }
                 }
+//                button("resizable"){
+//                    var resizeState = true;
+//                    action{
+//                        this@EditorView.primaryStage.isResizable = !resizeState
+//                        resizeState = !resizeState
+//                    }
+//                }
             }
 
 
@@ -259,6 +268,7 @@ class EditorView : View("Editor") {
         }
 
         center = borderpane {
+
             center = VirtualizedScrollPane<StyleClassedTextArea>(codeAreaEditor)
             bottom = borderpane {
                 top = separator(Orientation.HORIZONTAL)
@@ -372,8 +382,10 @@ class EditorView : View("Editor") {
                 }
                 else -> {
                     compilerStateLabelView.showCompilerStateOK()
-                    //this.exportingOK.value = currentTimeline.isNotEmpty()
-                    timelineDelayedExportEnable.playFromStart()
+                    this.exportingOK.value = currentTimeline.isNotEmpty() && false;
+                    if(currentTimeline.isNotEmpty()) {
+                        timelineDelayedExportEnable.playFromStart()
+                    }
                     messageArea.setOutputMessageDelayed(currentTimeline)
                 }
             }
@@ -397,7 +409,6 @@ class EditorView : View("Editor") {
             this.setParagraphGraphicFactory(LineNumberFactory.get(codeAreaEditor))
 
             this.undoManager = UndoUtils.plainTextUndoManager(this, java.time.Duration.ofMillis(400))
-
 
             resetText(this.text)
         }

@@ -2,7 +2,7 @@ package org.domaintbn.sommd.gui
 
 import java.io.File
 import javax.sound.midi.MidiSystem
-import sun.audio.AudioPlayer.player
+//import sun.audio.AudioPlayer.player
 import javax.sound.midi.MidiEvent
 import javax.sound.midi.Sequence
 import javax.sound.midi.Sequencer

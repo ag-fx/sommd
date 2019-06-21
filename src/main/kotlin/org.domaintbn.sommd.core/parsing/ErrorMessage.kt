@@ -256,7 +256,7 @@ class ErrorMessage private constructor(    val description : String,
         fun NOTE_GROUP_INVALID_TOKEN_STACKED(): ErrorMessage {
             val description = "Syntax error"
             val cause = "Cannot use stacking with {-} inside bracket groups"
-            val suggestion = "Example of advanced stacking: [40 40, 0 50, 0 57]"
+            val suggestion = "Example of advanced stacking: {[40 40, 0 50, 0 57]}"
 
             return ErrorMessage(description,cause,suggestion)
         }
@@ -264,7 +264,23 @@ class ErrorMessage private constructor(    val description : String,
         fun DURATION_GROUP_INVALID_TOKEN_STACKED(): ErrorMessage {
             val description = "Syntax error"
             val cause = "Cannot use stacking with {-} inside bracket groups"
-            val suggestion = "Example of stacking with groups: 1/2 -[1/4 s3/4]^2 1/4^2"
+            val suggestion = "Example of stacking with groups: {1/2 -[1/4 s3/4]^2 1/4^2}"
+
+            return ErrorMessage(description,cause,suggestion)
+        }
+
+        fun SCALE_GROUP_INVALID_TOKEN_STACKED(): ErrorMessage {
+            val description = "Syntax error"
+            val cause = "Cannot use {-} inside scale command bracket groups"
+            val suggestion = "Example of scale command bracket groups {[40 44 47]^3 [45 49 50]}"
+
+            return ErrorMessage(description,cause,suggestion)
+        }
+
+        fun SCALE_SINGLE_DIGIT_NOT(): ErrorMessage {
+            val description = "Syntax error"
+            val cause = "Received pitch with only one digit. Two digits are required."
+            val suggestion = "Example of valid pitch data for scale: {50} {43} {4b} "
 
             return ErrorMessage(description,cause,suggestion)
         }

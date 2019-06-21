@@ -795,6 +795,79 @@ brs.section"""
 
 
     ),
+    DEMO6(
+      "Demo: Demo 6",
+            """
+sc [50 52 53 55 57 58 5a]
+
+dr 3/12 1/12 1/12 1/12
+brs.theme1=
+ve 90 in 0
+dr 3/12 1/12 1/12 1/12
+brs nt 50 53 52 50 brr in 2 nt 40*4 bre
+brs nt  0 0 53 50  brr in 2 nt 36*4 bre
+brs nt  54 52 54 50 brr in 2 nt 35*4 bre
+brs nt  54 0 52 0 brr in 2 nt 35*4 bre
+
+brs nt 50 53 52 50 brr in 2 nt 34*4 bre
+brs nt  0 0 53 50  brr in 2 nt 34*4 bre
+brs nt  54 52 54 50 brr in 2 nt 30*4 bre
+brs nt  54 0 !52 !51 brr in 2 nt 30*4 bre
+bre
+
+brs.theme2=
+dr 1/12 ve 80 70 60 80 70 80 in 1 1 3 1 3 1
+dr -[1/12^3] 1/24-s1/24 1/12 s1/24-1/24
+
+brs nt 50 53 52 50 bre
+brs nt  0 0 53 50   bre
+brs nt  54 52 54 50  bre
+brs nt  54 0 52 0  bre
+
+brs nt 50 53 52 50  bre
+brs nt  0 0 53 50   bre
+brs nt  54 52 54 50  bre
+brs nt  54 0 !52 !51 bre
+bre
+
+
+brs.backing1=
+in 2 dr 1/2 ve 75
+nt 40 !41 !42 !42
+nt !43 !43 !44 !44
+brr
+in 2 dr 2/6-s1/6 ve 55
+nt 44 42 40 40
+nt 42 42 43 41
+bre
+
+
+brs.chopped1=
+dr 6/12 0 ve -[30 50]
+in 5 dr -[1/12^6]
+//in 5 dr 1/12-1/12-1/12-1/12-1/12
+nt 60 !61 !62 !62
+nt !63 !63 !64 !64
+
+bre
+
+
+dr 4/1
+tp 0 0 3 -2
+
+
+brs.chopped1
+brs.wrapit=
+brs.theme1 brs.theme2
+brr
+brs.backing1^2
+brr
+brs.chopped1^2
+bre
+
+brs.wrapit^4
+"""
+    ),
 
     TUTORIAL_1_NOTE(
         "Tutorial 1 : Note Command", """/*

@@ -6,7 +6,7 @@ class Scale(private val pitches: List<Int>) {
 
     init {
         when {
-            pitches.size !in 1..16 -> error("Meh")
+            pitches.size !in 0..16 -> error("Meh")
             //pitches.any { it !in 0..16 } -> error("meh")
             else -> {
             }

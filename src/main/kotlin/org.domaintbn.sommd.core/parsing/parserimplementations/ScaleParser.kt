@@ -52,7 +52,11 @@ class ScaleParser() : IParser {
                         r.separatorToLeaveGroups,
                             this
                     )
-                    group.start(lex)
+                    try {
+                        group.start(lex)
+                    } catch (bpe : BracketParserException){
+                        processBadGroupToken(bpe)
+                    }
                     processGroup(group.recursiveStringList)
                 }
                 tok.string.matches(r.stackedPitchB12) -> {
@@ -98,20 +102,22 @@ class ScaleParser() : IParser {
 
 
 
-    private fun processGroup(group : RecursiveList<String>){
+    private fun processGroup(group : RecursiveList<String>) {
 
-        fun correctInt(s : String): Int {
-            return 12*s[0].toInt()+
-                    when(s[1]){
+        fun correctInt(s: String): Int {
+            return 12 * s[0].toInt() +
+                    when (s[1]) {
                         'a' -> 10
                         'b' -> 11
                         else -> s[1].toInt()
                     }
         }
 
-        val intList = group.content.map{it.value.toInt(12)}
+        val intList = group.content.map { it.value.toInt(12) }
 
-        data.add(ParamScale(Scale(intList)))
+        repeat(group.repeatCnt) {
+            data.add(ParamScale(Scale(intList)))
+        }
     }
 
     override fun getCommandSequence(): CommandSeq {
@@ -131,6 +137,12 @@ class ScaleParser() : IParser {
 
     }
 
+    private fun processBadGroupToken(bpe: BracketParserException) {
+        if(bpe.problemToken.string.matches(r.stackedPitchB12)){
+            throw ParserException(bpe.problemToken,ErrorMessage.SCALE_GROUP_INVALID_TOKEN_STACKED(),bpe.source)
+        }
+    }
+
     fun classifySyntaxError(s : String): ErrorMessage {
         val out = StringBuilder()
         val validsRemoved = s.replace(Regex("[0-9a-bA-B\\^\\-\\!\\[\\]]"),"")
@@ -144,7 +156,7 @@ class ScaleParser() : IParser {
             return ErrorMessage.SCALE_STACKED_GROUP()
         }
         if(s.length==1 && !s.matches(Regex("\\s"))){
-            return ErrorMessage.NOTE_SINGLE_DIGIT_NOT_ZERO()
+            return ErrorMessage.SCALE_SINGLE_DIGIT_NOT()
         }
         if(s.matches(Regex("[0-9a-bA-b]{3,999}"))){
             return ErrorMessage.NOTE_TOO_MANY_DIGITS()
