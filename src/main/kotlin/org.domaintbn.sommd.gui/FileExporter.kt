@@ -82,6 +82,7 @@ class FileExporter : Controller(){
             }
 
         }
+        find(MainView::class).fixNotResizable()
 
     }
 
@@ -94,7 +95,6 @@ class FileExporter : Controller(){
                 "warn",
                 "Nothing to export. Canceling."
             )
-
         } else {
             val fc = FileChooser()
             fc.extensionFilters.add(FileChooser.ExtensionFilter("FL Score file (*.fsc)", "*.fsc"))
@@ -105,15 +105,14 @@ class FileExporter : Controller(){
                 val validFileEnding = result.name.endsWith(".fsc")
                 if (!validFileEnding) {
                     alert(Alert.AlertType.ERROR, "Error", "Wrong file ending.")
-                    return
+                }else{
+                    val toWrite = FLScoreWriter.FLScoreExport(currentTimeline)
+                    result.writeBytes(toWrite)
+                    find(MessageAreaView::class).setMessage("Saved file to ${result.path}")
                 }
-
-                val toWrite = FLScoreWriter.FLScoreExport(currentTimeline)
-                result.writeBytes(toWrite)
-                find(MessageAreaView::class).setMessage("Saved file to ${result.path}")
             }
-
         }
+        find(MainView::class).fixNotResizable()
     }
 
     fun preExportFile(currentTimeline : List<TimelineNote>): Boolean {

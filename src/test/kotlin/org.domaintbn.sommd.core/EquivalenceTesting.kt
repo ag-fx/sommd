@@ -25,7 +25,7 @@ class EquivalenceTesting{
     fun testBasic(){
         assertEquals(
             getSongOutput("nt 40 50 "),
-            getSongOutput("dr 1/4 nt 40 50 ")
+            getSongOutput("dr 1/4 nt 40 50")
         )
     }
 

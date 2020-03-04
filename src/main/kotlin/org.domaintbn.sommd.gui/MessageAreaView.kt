@@ -62,9 +62,9 @@ class MessageAreaView : View("MessageAreaView"){
         val errorArea = pe.errorSpot.toStringNoNewlines()+"\n"
 
         val spansBuilder = StyleSpansBuilder<Collection<String>>()
-        spansBuilder.add(Collections.singleton("command"),parserID.length)
-        spansBuilder.add(Collections.singleton("none"),problemDescr.length)
-        spansBuilder.add(Collections.singleton("syntaxerror"),errorArea.length)
+        spansBuilder.add(Collections.singleton("command"), parserID.length)
+        spansBuilder.add(Collections.singleton("none"), problemDescr.length)
+        spansBuilder.add(Collections.singleton("syntaxerror"), errorArea.length)
 
 
         val newText = StringBuilder()

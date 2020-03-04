@@ -37,6 +37,8 @@ class MainStyle2 : Stylesheet(){
 
         val codearea by cssclass("code-area")
 
+        val fakemodaldialog by cssclass(CustomCssStrings.fakemodaldialog)
+
         //val selection by cssclass()
 
     }
@@ -113,6 +115,11 @@ class MainStyle2 : Stylesheet(){
             fill = Color.BLACK
         }
 
+        fakemodaldialog {
+            borderStyle += BorderStrokeStyle.SOLID
+            borderWidth += box(5.px)
+            borderColor += box(Color.BLACK)
+        }
 
         selection {
             fill = Color.WHITESMOKE
@@ -177,9 +184,13 @@ class MainStyle : Stylesheet(){
         val lineNumbering by cssclass("lineno")
 
 
-        val buttonhboxgroup by cssclass("buttonhboxgroup")
+        val buttonhboxgroup by cssclass(CustomCssStrings.buttonhboxgroup)
 
         //val camingoCodeFont = loadFont("/CamingoCode-v1.0/CamingoCode-Regular.ttf",12)
+
+        val showBorder by cssclass(CustomCssStrings.showBorder)
+
+        val fakemodaldialog by cssclass(CustomCssStrings.fakemodaldialog)
 
     }
 
@@ -299,6 +310,13 @@ class MainStyle : Stylesheet(){
             +globalSettings
         }
 
+        showBorder{
+            borderStyle += BorderStrokeStyle.DASHED
+            borderWidth = multi(box(3.px),box(3.px))
+            borderColor += box(Color.BLUE)
+        }
+
+
 
 
         tabHeaderBackground{
@@ -412,7 +430,18 @@ class MainStyle : Stylesheet(){
 
 
 
+        fakemodaldialog {
+            padding = box(10.px)
+            backgroundColor += fldarkButtonBkgDarker
+            borderStyle += BorderStrokeStyle.SOLID
+            borderWidth += box(2.px)
+            borderColor += box(flWhiteish)
 
+            label{
+                padding = box(15.px)
+            }
+
+        }
 
         command {
 
@@ -474,6 +503,11 @@ class MainStyle : Stylesheet(){
 //            borderWidth += box(5.px)
         }
 
+        separator{
+            //fill = Color.WHITE
+            baseColor = flLightGray
+            //borderColor += box(Color.WHITE)
+        }
 
         styledTextArea {
             backgroundColor += fldarkButtonBkg

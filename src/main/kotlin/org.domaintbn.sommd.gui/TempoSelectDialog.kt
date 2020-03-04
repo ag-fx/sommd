@@ -2,13 +2,28 @@ package org.domaintbn.sommd.gui
 
 import javafx.beans.property.SimpleStringProperty
 import javafx.geometry.Pos
+import javafx.scene.control.ButtonType
+import javafx.scene.input.KeyCode
+import javafx.scene.input.KeyEvent
 import javafx.scene.layout.Priority
 import javafx.scene.text.TextAlignment
 import javafx.util.StringConverter
 import tornadofx.*
 
-class TempoSelectDialog() : View("Audio Export"){
-    var wasCanceled = false
+class TempoSelectDialog: View("Tempo Select"), IFakeModalDialog{
+
+    var externalBpmProperty: SimpleStringProperty = SimpleStringProperty("BPM\n120")
+
+
+    override fun setCallback(callback: (ButtonType) -> Unit) {
+        this.callback = callback
+    }
+
+    private var callback : (buttonType: ButtonType) -> Unit = {}
+
+    override fun getView(): View {
+        return this
+    }
 
     private var timeMultiplierLocal : Double = 120.0/(240-60)
 
@@ -41,16 +56,14 @@ class TempoSelectDialog() : View("Audio Export"){
     private var changedTimeMultiplier : Double = 1.0
 
     override val root = vbox{
-//        style{
-//            padding = box(20.px)
-//        }
-        this.setMinSize(300.0,150.0)
+
+        addClass(CustomCssStrings.fakemodaldialog)
         label("Set tempo for exported audio and MIDI playback"){
-           style{
+            style{
                 padding = box(10.px)
-               text {
-                   textAlignment = TextAlignment.CENTER
-               }
+                text {
+                    textAlignment = TextAlignment.CENTER
+                }
             }
             hgrow = Priority.ALWAYS
             useMaxSize = true
@@ -85,6 +98,7 @@ class TempoSelectDialog() : View("Audio Export"){
                 padding = box(10.px)
             }
         }
+
         hbox{
             useMaxWidth = true
             style {
@@ -94,26 +108,27 @@ class TempoSelectDialog() : View("Audio Export"){
             button("Change"){
                 action{
                     timeMultiplierLocal = changedTimeMultiplier
-                    this@TempoSelectDialog.close()
+                    externalBpmProperty.set("BPM\n"+tempoBPM)
+                    callback(ButtonType.OK)
                 }
                 useMaxWidth = true
                 hgrow = Priority.ALWAYS
             }
             button("Cancel"){
                 action{
-                    this@TempoSelectDialog.close()
                     changedTimeMultiplier = timeMultiplierLocal
-                    wasCanceled = true
+                    callback(ButtonType.CANCEL)
                 }
                 useMaxWidth = true
                 hgrow = Priority.ALWAYS
             }
         }
+        addEventFilter(KeyEvent.KEY_PRESSED){event ->
+            if(event.code== KeyCode.ESCAPE){
+                changedTimeMultiplier = timeMultiplierLocal
+                callback(ButtonType.CANCEL)
+            }
+        }
     }
 
-    init{
-        this.setWindowMinSize(300,150)
-        this.primaryStage.isResizable = false
-
-    }
 }

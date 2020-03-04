@@ -728,75 +728,8 @@ brs brs.mel1 brs.mel1_2 brr brs.backing1^2 brr brs.arp1^2 bre
 """
     ),
 
-
-    DEMO5("Demo: Demo 5",
-            """   //minor scale
-sc 50-52-53-55-57-58-5a
-
-   /*starting a branch and
-   saving it to a variable*/
-brs.part1=
-       //instrument channel 0
-   in 0
-
-      // dr sets duration, nt creates a note
-      // first digit = octave, second digit = scale index
-   dr 1/4 nt 50 51 52 51 dr 1/1 nt 50
-   dr 1/8-1/8 nt 50 51 53 54 dr 1/1 nt 50
-
-brr      //branch reset (start on next branch)
-   in 2
-
-      //dashes lets you stack notes into a chord
-   dr 4/1 nt 40-42-44
-brr
-   in 1
-      // setting up a velocity cycle. each 1/16 time
-      // division will have a different velocity
-   dr 1/16 ve 40 60 70 30
-
-      // dashes lets you make a note repeat
-      // here, one note is played four times
-   dr 1/16-1/16-1/16-1/16
-
-      // all commands can be saved to a variable
-      // when a command is saved, it is not inserted
-      // into the song, just defined
-   nt.pat= 60 61 62 63  64 65 66 65
-
-      // and here the variable is loaded
-      // and inserted into the song
-   nt.pat
-   nt.pat
-bre      // end of branch here. will now continue
-      // with the state of the FIRST branch as it
-      // finished
-
-brs.section=   //defining a new branch, referencing the other one
-
-      // scale shift. shifts all notes up or down the scale
-   ss 0
-   brs.part1
-   ss 1
-   brs.part1
-   ss -2
-   brs.part1
-   ss 0
-   brs.part1
-bre
-
-      // now we play the section
-brs.section
-      // change scale to major
-sc 50-52-54-55-57-59-5b
-      // play section again in major
-brs.section"""
-
-
-
-    ),
-    DEMO6(
-      "Demo: Demo 6",
+    DEMO5(
+            "Demo: Demo 5",
             """
 sc [50 52 53 55 57 58 5a]
 
@@ -868,6 +801,106 @@ bre
 brs.wrapit^4
 """
     ),
+
+
+    DEMO6("Demo: Demo 6",
+            """   //minor scale
+sc 50-52-53-55-57-58-5a
+
+   /*starting a branch and
+   saving it to a variable*/
+brs.part1=
+       //instrument channel 0
+   in 0
+
+      // dr sets duration, nt creates a note
+      // first digit = octave, second digit = scale index
+   dr 1/4 nt 50 51 52 51 dr 1/1 nt 50
+   dr 1/8-1/8 nt 50 51 53 54 dr 1/1 nt 50
+
+brr      //branch reset (start on next branch)
+   in 2
+
+      //dashes lets you stack notes into a chord
+   dr 4/1 nt 40-42-44
+brr
+   in 1
+      // setting up a velocity cycle. each 1/16 time
+      // division will have a different velocity
+   dr 1/16 ve 40 60 70 30
+
+      // dashes lets you make a note repeat
+      // here, one note is played four times
+   dr 1/16-1/16-1/16-1/16
+
+      // all commands can be saved to a variable
+      // when a command is saved, it is not inserted
+      // into the song, just defined
+   nt.pat= 60 61 62 63  64 65 66 65
+
+      // and here the variable is loaded
+      // and inserted into the song
+   nt.pat
+   nt.pat
+bre      // end of branch here. will now continue
+      // with the state of the FIRST branch as it
+      // finished
+
+brs.section=   //defining a new branch, referencing the other one
+
+      // scale shift. shifts all notes up or down the scale
+   ss 0
+   brs.part1
+   ss 1
+   brs.part1
+   ss -2
+   brs.part1
+   ss 0
+   brs.part1
+bre
+
+      // now we play the section
+brs.section
+      // change scale to major
+sc 50-52-54-55-57-59-5b
+      // play section again in major
+brs.section"""
+
+
+
+    ),
+
+    DEMO7("Demo: Demo 7","""
+sc.minor= [50 52 53 55 57 58 5a]
+sc.major= [50 52 54 55 57 59 5b]
+
+
+
+sc.minor
+brs.sec1=
+dr 1/16-1/16
+in 3
+nt [50 52 51 50 !53 !51 50*2]^2
+dr 1/8
+nt [50 52 51 50 !51 !53 !55*2]^2
+brr
+dr 1/1 in 2 ve 50 nt -[40 44 50]^3 -[44 50 54]
+brr
+in 0 dr 1/16 ve 0 40 90 85 dr 1/16 nt [30 30 30 30 30 30 40 30]^8
+bre
+
+
+brs.intro= ss 0 brs.sec1 ss 3 brs.sec1 bre
+
+brs.sec1= dr 1/1 ss 0 0 0 2 0 0 0 3 brs.sec1^2 bre
+
+brs.intro
+brs.sec1
+sc.major
+brs.sec1
+
+    """.trimIndent()),
+
 
     TUTORIAL_1_NOTE(
         "Tutorial 1 : Note Command", """/*

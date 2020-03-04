@@ -3,9 +3,9 @@ package org.domaintbn.sommd.gui
 import javafx.animation.KeyFrame
 import javafx.animation.Timeline
 import javafx.beans.property.SimpleBooleanProperty
+import javafx.beans.property.SimpleStringProperty
 import javafx.event.ActionEvent
 import javafx.event.EventHandler
-import javafx.event.EventType
 import javafx.geometry.Orientation
 import javafx.scene.control.*
 import javafx.scene.input.*
@@ -34,6 +34,7 @@ class EditorView : View("Editor") {
 
     private val codeAreaEditor = StyleClassedTextArea()
 
+    private val bpmValue = SimpleStringProperty("BPM\n120")
 
 
     val timerForCompiling = Timeline()
@@ -61,6 +62,7 @@ class EditorView : View("Editor") {
         }))
     }
 
+
     override val root = borderpane {
 
         top = hbox {
@@ -69,25 +71,28 @@ class EditorView : View("Editor") {
                     menu("File") {
                         item("New") {
                             action {
-                                resetFile()
+                                //resetFile()
+                                newFile()
                             }
                         }
                         item("Open..") {
                             action {
                                 loadFile(this@EditorView.currentWindow)
+
                             }
                         }
                         separator()
                         item("Save As..") {
                             action {
                                 saveFile(this@EditorView.codeAreaEditor.text,this@EditorView.currentWindow)
+
                             }
                         }
 
                         separator()
                         item("Quit") {
                             action {
-                                find(MainView::class).quitProgram()
+                                find(MainView::class).quitProgramDialog()
                             }
                         }
                     }
@@ -104,8 +109,6 @@ class EditorView : View("Editor") {
                                     messageArea.setMessage("Changed to font: ${fontNames[idx]}")
                                     reloadStylesheets()
                                 }
-
-
                             }
                         }
                         item("Cycle font size") {
@@ -128,13 +131,27 @@ class EditorView : View("Editor") {
                                 importStylesheet(styleClasses[idx])
                             }
                         }
+                        separator()
+
+                        item("Reset window size"){
+                            enableWhen(this@EditorView.primaryStage.maximizedProperty().not())
+                            action {
+                                this@EditorView.primaryStage.width = constants.MIN_WIDTH
+                                this@EditorView.primaryStage.height = constants.MIN_HEIGHT
+                            }
+                        }
+                        item("Fix not-resizable") {
+                            action {
+                                find(MainView::class).fixNotResizable()
+                            }
+                        }
                     }
 
                 }
                 separator(orientation = Orientation.HORIZONTAL)
             }
             hbox {
-                addClass("buttonhboxgroup")
+                addClass(CustomCssStrings.buttonhboxgroup)
                 button {
                     val unicode_mouseicon = "\uD83D\uDDB0"
                     text = "Export\nMIDI $unicode_mouseicon"
@@ -145,12 +162,14 @@ class EditorView : View("Editor") {
 
                     this.setOnDragDetected {
                         if (exportingOK.value && fileExporter.preExportFile(currentTimeline)) {
+                            //it.consume()
                             val db = startDragAndDrop(TransferMode.COPY)
                             val cbc = ClipboardContent()
                             cbc.putFiles(listOf(File("dragDropMIDI.mid")))
                             db.setContent(cbc)
                             it.consume()
                         }
+                        //it.consume()
                     }
 
                 }
@@ -176,15 +195,13 @@ class EditorView : View("Editor") {
             }
 
             hbox {
-                addClass("buttonhboxgroup")
+                addClass(CustomCssStrings.buttonhboxgroup)
 
-                button("BPM\n120") {
+                button(bpmValue) {
                     action {
-                        val exportDialog = find(TempoSelectDialog::class)
-                        exportDialog.openModal(owner = this@EditorView.currentWindow, block = true)
-                        val newTempoText = exportDialog.tempoBPM
-                        this.text = "BPM\n$newTempoText"
-
+                        val tempoDialog = find(TempoSelectDialog::class)
+                        tempoDialog.externalBpmProperty = this@EditorView.bpmValue
+                        find(MainView::class).showFakeModalDialog(tempoDialog)
                     }
 
                 }
@@ -192,27 +209,7 @@ class EditorView : View("Editor") {
                 button("Export\nAudio") {
                     enableWhen(exportingOK)
                     action {
-                        val output = File("output.wav")
-
-                        val result = alert(Alert.AlertType.CONFIRMATION, "Export audio", "Export a chiptune-esque audio rendering now?", owner = this@EditorView.currentWindow)
-                        val doExport = (result.result == ButtonType.OK)
-
-
-                        if (doExport) {
-                            val timeMultiplier = find(TempoSelectDialog::class).timeMultiplier
-
-                            runAsync {
-                                val afe = AudioRender(this@EditorView.currentTimeline, timeMultiplier)
-
-                                val sampleArray = afe.render(44100.0)
-                                fileExporter.audioBuffer2WAVFile(sampleArray, 44100.0, File("output.wav"))
-                            } ui {
-
-                                messageArea.setMessage("Export to audio done: ${output.absolutePath}")
-                            }
-                        } else {
-                            messageArea.setMessage("Export canceled")
-                        }
+                        exportAudioAction()
                     }
                 }
 
@@ -233,13 +230,6 @@ class EditorView : View("Editor") {
                         }
                     }
                 }
-//                button("resizable"){
-//                    var resizeState = true;
-//                    action{
-//                        this@EditorView.primaryStage.isResizable = !resizeState
-//                        resizeState = !resizeState
-//                    }
-//                }
             }
 
 
@@ -278,12 +268,36 @@ class EditorView : View("Editor") {
         }
     }
 
+    private fun exportAudioAction() {
+        val output = File("output.wav")
+
+        val callback : (Boolean) -> Unit = {
+            if(it) {
+                val timeMultiplier = find(TempoSelectDialog::class).timeMultiplier
+
+                runAsync {
+                    val afe = AudioRender(this@EditorView.currentTimeline, timeMultiplier)
+
+                    val sampleArray = afe.render(44100.0)
+                    fileExporter.audioBuffer2WAVFile(sampleArray, 44100.0, File("output.wav"))
+                } ui {
+
+                    messageArea.setMessage("Export to audio done: ${output.absolutePath}")
+                }
+            } else {
+                messageArea.setMessage("Export canceled")
+            }
+        }
+
+        find(MainView::class).showFakeModalDialog("Export a chiptune-esque audio rendering now?",callback)
+
+    }
+
     init {
         setupCodeEditor()
     }
 
     private fun resetText(str: String) {
-
 
         val delay = when (str.length) {
             in 0..500 -> 50.0
@@ -414,35 +428,34 @@ class EditorView : View("Editor") {
         }
     }
 
-    private fun resetFile() {
-        val result = alert(
-            Alert.AlertType.CONFIRMATION,
-            "New",
-            "Discard contents and open new file?",
-            owner = this@EditorView.currentWindow
-        )
-        val doReset = result.result == ButtonType.OK
-
-
-        if (!doReset) return
-        codeAreaEditor.replaceText("")
-        codeAreaEditor.undoManager.forgetHistory()
-
+    private fun newFile(){
+        val msg = "Discard contents and open new file?"
+        val callback : (Boolean) -> Unit = {confirmed : Boolean ->
+          if(confirmed){
+              codeAreaEditor.replaceText("")
+              codeAreaEditor.undoManager.forgetHistory()
+          }
+        }
+        find(MainView::class).showFakeModalDialog(msg,callback)
     }
 
 
     private fun loadFile(parentWindow : Window?) {
-        val fc = FileChooser()
-        fc.extensionFilters.add(FileChooser.ExtensionFilter("TXT file", "*.txt"))
-        val result = FileChooser().showOpenDialog(parentWindow)
-        if (result == null) {
-            return
+
+
+        val extFilt = FileChooser.ExtensionFilter("TXT file", "*.txt")
+
+        val tmp = chooseFile("",arrayOf(extFilt),mode=FileChooserMode.Single, owner=parentWindow)
+        if(tmp.isNotEmpty()) tmp.first().apply{
+            codeAreaEditor.replaceText(this.readText())
+            codeAreaEditor.undoManager.forgetHistory()
         }
-        val f = File(result.path)
-        codeAreaEditor.replaceText(f.readText())
-        codeAreaEditor.undoManager.forgetHistory()
+
+
+        find(MainView::class).fixNotResizable()
 
         //mc.tryCompilation()
+        //find(MainView::class).fakeModal(false)
     }
 
     private fun saveFile(textContents : String, parentWindow : Window?) {
@@ -455,6 +468,8 @@ class EditorView : View("Editor") {
             f.writeBytes(textContents.toByteArray())
             //messageText.value = "Saved file to ${f.toString()}"
         }
+
+        find(MainView::class).fixNotResizable()
     }
 
 
@@ -498,17 +513,17 @@ class EditorView : View("Editor") {
     }
 
     fun overwriteWithExample(value: String) {
-        val result = alert(
-                Alert.AlertType.CONFIRMATION,
-                "Set Example",
-                "Replace contents in editor with the example?",
-                owner = this@EditorView.currentWindow
-        )
-        val doOverwrite = result.result == ButtonType.OK
-        if(doOverwrite) {
-            this.codeAreaEditor.replaceText(value)
-            find(MainView::class).changeToEditor()
+        val callback: (confirmed: Boolean) -> Unit = { c ->
+            when(c){
+                true ->{
+                    this.codeAreaEditor.replaceText(value)
+                    find(MainView::class).changeToEditor()
+                }
+                else -> {}
+            }
         }
+        find(MainView::class)
+                .showFakeModalDialog("Overwrite contents in editor?",callback)
 
     }
 

@@ -25,4 +25,14 @@ The program is split into the following modules:
 The core has no java dependencies at all, it is written in pure Kotlin! Thus it can be used in web or native applications as
 Kotlin can be compiled against those targets.
 
+#Build/run
+On command line:
+mvn package;
+java -jar ./target/sommdjfx-0.1.jar;
+
+Using an IDE, main function is in:
+org.domaintbn.sommd.gui.Main
+
+#Screenshot
+
 ![](https://github.com/user00e00/sommd/blob/master/Screenshot_SoMMD.png?raw=true)
